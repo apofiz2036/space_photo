@@ -1,5 +1,11 @@
 import telegram
+import os
 
-telegram_bot = telegram.Bot(token='7046088818:AAG6JvjJVyw7U6N0IQu1kjw679ncHag_bDM')
+telegram_bot_token = os.environ['TELEGRAM_BOT_TOKEN']
 
-telegram_bot.send_message(chat_id='@space_photo_Apofiz', text='Hello')
+telegram_bot = telegram.Bot(token=telegram_bot_token)
+
+telegram_bot.send_document(
+    chat_id='@space_photo_Apofiz',
+    document=open('images\\apod_nasa_0.jpg', 'rb')
+)
