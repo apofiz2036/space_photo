@@ -1,12 +1,14 @@
 import requests
 import os
-
+import argparse
 import general_functions as gf
-
-nasa_token = os.environ['NASA_TOKEN']
+from dotenv import load_dotenv
 
 
 def nasa_epic_photo():
+    load_dotenv()
+    nasa_token = os.environ['NASA_TOKEN']
+
     url = 'https://api.nasa.gov/EPIC/api/natural/images'
     payload = {'api_key': nasa_token}
     response = requests.get(url, params=payload)
@@ -33,7 +35,7 @@ def nasa_epic_photo():
 
     data = [] 
 
-    for number in range(5):
+    for number in range(args.count):
         url = 'https://api.nasa.gov/EPIC/archive/natural'
         payload = {'api_key': nasa_token}
         response = requests.get(
@@ -49,3 +51,20 @@ def nasa_epic_photo():
             name_photo='epic_nasa',
             file='png'
         )
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Находит и сохраняет EPIC фото с сайта API NASA'
+    )
+
+    parser.add_argument(
+        '-c',
+        '--count',
+        type=int,
+        default=10,
+        help='Количество загружаемых изображений, по умолчанию 10'
+    )
+
+    args = parser.parse_args()
+
+    nasa_epic_photo()
