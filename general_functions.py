@@ -15,7 +15,7 @@ def save_image(image_number, photo_url, name_photo, file='jpg'):
         file.write(response.content)
 
 
-def file_extension(url_photo):
+def get_file_extension(url_photo):
     part_of_link = urllib.parse.urlsplit(urllib.parse.unquote(url_photo))[2]
     filename = splitext(part_of_link)[1]
     return filename[1:]

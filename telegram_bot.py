@@ -5,26 +5,8 @@ import time
 import argparse
 from dotenv import load_dotenv
 
-load_dotenv()
-telegram_bot_token = os.environ['TELEGRAM_BOT_TOKEN']
-telegram_bot = telegram.Bot(token=telegram_bot_token)
 
-
-parser = argparse.ArgumentParser(
-    description='Отправляет изображения из папки "image" в телеграмм'
-)
-
-parser.add_argument(
-    '-t',
-    '--telegram_timer',
-    type=int,
-    default=14400,
-    help='Через сколько секунд отправлять сообщение'
-)
-args = parser.parse_args()
-
-
-def send_image(telegram_timer):
+def send_image(telegram_timer, id):
     for photo in os.walk('images'):
         files_list = photo[2]
 
@@ -33,11 +15,37 @@ def send_image(telegram_timer):
     while True:
         for photo in files_list:
             time.sleep(telegram_timer)
-            telegram_bot.send_document(
-                chat_id='@space_photo_Apofiz',
-                document=open(f'images\\{photo}', 'rb')
-            )
+            with open(f'images\\{photo}', 'rb'):
+                telegram_bot.send_document(
+                    chat_id=id,
+                    document=open(f'images\\{photo}', 'rb')
+                )
 
 
 if __name__ == '__main__':
-    send_image(args.telegram_timer)
+    load_dotenv()
+    telegram_bot_token = os.environ['TELEGRAM_BOT_TOKEN']
+    telegram_bot = telegram.Bot(token=telegram_bot_token)
+
+    parser = argparse.ArgumentParser(
+        description='Отправляет изображения из папки "image" в телеграмм'
+    )
+
+    parser.add_argument(
+        '-t',
+        '--telegram_timer',
+        type=int,
+        default=14400,
+        help='Через сколько секунд отправлять сообщение'
+    )
+
+    parser.add_argument(
+        '--id',
+        type=str,
+        default='@space_photo_Apofiz',
+        help='Id чата, по умолчанию "@space_photo_Apofiz"'
+    )
+
+    args = parser.parse_args()
+
+    send_image(args.telegram_timer, args.id)

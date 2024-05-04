@@ -5,46 +5,41 @@ import general_functions as gf
 from dotenv import load_dotenv
 
 
-def nasa_epic_photo():
-    load_dotenv()
-    nasa_token = os.environ['NASA_TOKEN']
-
-    url = 'https://api.nasa.gov/EPIC/api/natural/images'
+def get_nasa_epic_photo(url_api, url_archive):
     payload = {'api_key': nasa_token}
-    response = requests.get(url, params=payload)
+    response = requests.get(url_api, params=payload)
     response.raise_for_status()
-    data = response.json()
-    list_photo = []
+    json_text = response.json()
+    photos = []
 
-    for photo in data:
+    for photo in json_text:
         image = photo['image']
         date = photo['date'].split()[0]
-        t = (image, date)
-        list_photo.append(t)
+        image_date = (image, date)
+        photos.append(image_date)
 
     name_file = []
     year = []
     month = []
     day = []
 
-    for photo in list_photo:
+    for photo in photos:
         name_file.append(photo[0])
         year.append(photo[1].split('-')[0])
         month.append(photo[1].split('-')[1])
         day.append(photo[1].split('-')[2])
 
-    data = [] 
+    image_download_urls = []
 
     for number in range(args.count):
-        url = 'https://api.nasa.gov/EPIC/archive/natural'
         payload = {'api_key': nasa_token}
         response = requests.get(
-            f'{url}/{year[number]}/{month[number]}/{day[number]}/png/{name_file[number]}.png',
+            f'{url_archive}/{year[number]}/{month[number]}/{day[number]}/png/{name_file[number]}.png',
             params=payload
         )
-        data.append(response.url)
+        image_download_urls.append(response.url)
 
-    for image_number, photo_url in enumerate(data):
+    for image_number, photo_url in enumerate(image_download_urls):
         gf.save_image(
             image_number,
             photo_url,
@@ -52,7 +47,14 @@ def nasa_epic_photo():
             file='png'
         )
 
+
 if __name__ == '__main__':
+    load_dotenv()
+    nasa_token = os.environ['NASA_TOKEN']
+
+    url_api = 'https://api.nasa.gov/EPIC/api/natural/images'
+    url_archive = 'https://api.nasa.gov/EPIC/archive/natural'
+
     parser = argparse.ArgumentParser(
         description='Находит и сохраняет EPIC фото с сайта API NASA'
     )
@@ -67,4 +69,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    nasa_epic_photo()
+    get_nasa_epic_photo(url_api, url_archive)
