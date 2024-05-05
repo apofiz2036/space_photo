@@ -9,10 +9,10 @@ def get_nasa_epic_photo(url_api, url_archive):
     payload = {'api_key': nasa_token}
     response = requests.get(url_api, params=payload)
     response.raise_for_status()
-    json_text = response.json()
+    epic_photos = response.json()
     photos = []
 
-    for photo in json_text:
+    for photo in epic_photos:
         image = photo['image']
         date = photo['date'].split()[0]
         image_date = (image, date)
