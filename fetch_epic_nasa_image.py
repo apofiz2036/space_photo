@@ -5,7 +5,7 @@ import general_functions as gf
 from dotenv import load_dotenv
 
 
-def get_nasa_epic_photo(url_api, url_archive):
+def get_nasa_epic_photo():
     payload = {'api_key': nasa_token}
     response = requests.get(url_api, params=payload)
     response.raise_for_status()
@@ -69,4 +69,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    get_nasa_epic_photo(url_api, url_archive)
+    get_nasa_epic_photo()
