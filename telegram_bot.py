@@ -8,12 +8,12 @@ from dotenv import load_dotenv
 
 def send_image(telegram_timer, id):
     for photo in os.walk('images'):
-        files_list = photo[2]
+        files = photo[2]
 
-    random.shuffle(files_list)
+    random.shuffle(files)
 
     while True:
-        for photo in files_list:
+        for photo in files:
             time.sleep(telegram_timer)
             with open(f'images\\{photo}', 'rb'):
                 telegram_bot.send_document(
