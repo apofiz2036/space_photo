@@ -10,31 +10,14 @@ def get_nasa_epic_photo():
     response = requests.get(url_api, params=payload)
     response.raise_for_status()
     epic_photos = response.json()
-    photos = []
-
-    for photo in epic_photos:
-        image = photo['image']
-        date = photo['date'].split()[0]
-        image_date = (image, date)
-        photos.append(image_date)
-
-    name_file = []
-    year = []
-    month = []
-    day = []
-
-    for photo in photos:
-        name_file.append(photo[0])
-        year.append(photo[1].split('-')[0])
-        month.append(photo[1].split('-')[1])
-        day.append(photo[1].split('-')[2])
-
+    photos = [(photo['image'], photo['date'].split()[0]) for photo in epic_photos]
     image_download_urls = []
-
-    for number in range(args.count):
+    for i in range(args.count):
+        image, date = photos[i]
+        year, month, day = date.split('-')
         payload = {'api_key': nasa_token}
         response = requests.get(
-            f'{url_archive}/{year[number]}/{month[number]}/{day[number]}/png/{name_file[number]}.png',
+            f'{url_archive}/{year}/{month}/{day}/png/{image}.png',
             params=payload
         )
         image_download_urls.append(response.url)
