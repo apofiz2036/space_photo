@@ -6,7 +6,7 @@ import argparse
 from dotenv import load_dotenv
 
 
-def send_image(telegram_timer, id):
+def send_image(telegram_timer, id, telegram_bot):
     for photo in os.walk('images'):
         files = photo[2]
 
@@ -48,4 +48,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    send_image(args.telegram_timer, args.id)
+    send_image(args.telegram_timer, args.id, telegram_bot)
