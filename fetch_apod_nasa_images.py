@@ -5,8 +5,9 @@ import general_functions as gf
 from dotenv import load_dotenv
 
 
-def get_nasa_photo():
-    payload = {'api_key': nasa_token, 'count': args.count}
+def get_nasa_photo(nasa_token, count):
+    url = 'https://api.nasa.gov/planetary/apod'
+    payload = {'api_key': nasa_token, 'count': count}
     response = requests.get(url, params=payload)
     response.raise_for_status()
     image_urls = [i['url'] for i in response.json()]
@@ -20,8 +21,6 @@ def get_nasa_photo():
 if __name__ == '__main__':
     load_dotenv()
     nasa_token = os.environ['NASA_TOKEN']
-
-    url = 'https://api.nasa.gov/planetary/apod'
 
     parser = argparse.ArgumentParser(
         description='Находит и сохраняет фото дня с сайта API NASA'
@@ -37,4 +36,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    get_nasa_photo()
+    get_nasa_photo(nasa_token, args.count)
